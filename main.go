@@ -49,7 +49,7 @@ func main() {
 		refinedRow, imageOrder = tr.RefineImagePhrase(refinedRow, imageOrder)
 
 		// Add '{:target="_blank"}' to the end of link phrase
-		refinedRow = tr.AddBlankPhrase(refinedRow)
+		refinedRow = tr.RefineLinkPhrase(refinedRow)
 
 		refined = append(refined, refinedRow+"\n")
 
