@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dynalist_to_markdown/config"
 	tr "dynalist_to_markdown/transformer"
 	"dynalist_to_markdown/util"
 	"fmt"
@@ -24,6 +25,10 @@ func main() {
 
 		// Remove title
 		if i == 0 {
+			refinedRow = strings.TrimLeft(row, " ")
+			refinedRow = strings.Replace(refinedRow, config.Mark+" ", "", 1)
+			refinedRow = tr.AddMeta(refinedRow)
+			refined = append(refined, refinedRow+"\n")
 			continue
 		}
 

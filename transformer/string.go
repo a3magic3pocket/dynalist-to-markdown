@@ -2,10 +2,22 @@ package transformer
 
 import (
 	"dynalist_to_markdown/config"
+	"dynalist_to_markdown/util"
 	"fmt"
 	"regexp"
 	"strings"
 )
+
+func AddMeta(title string) string {
+	timePhrase := util.GetTimeNowMetaFormat()
+
+	return fmt.Sprintf(`---
+title: %s
+date: %s
+categories: [your-category]
+tags: [your-tag1, your-tage2]    # TAG names should always be lowercase
+---`, title, timePhrase)
+}
 
 func CheckCodeMarkLine(row string) bool {
 	return strings.Contains(row, " ```")
