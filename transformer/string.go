@@ -19,6 +19,18 @@ tags: [your-tag1, your-tage2]    # TAG names should always be lowercase
 ---`, title, timePhrase)
 }
 
+func CheckSubTitle(row string) bool {
+	if len(row) < 6 {
+		return false
+	}
+
+	return row[0:6] == fmt.Sprintf("    %s ", config.Mark)
+}
+
+func AddSubTitle(row string) string {
+	return fmt.Sprintf("## %s", row)
+}
+
 func CheckCodeMarkLine(row string) bool {
 	return strings.Contains(row, " ```")
 }

@@ -3,6 +3,7 @@ package transformer
 import (
 	"dynalist_to_markdown/config"
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -318,5 +319,75 @@ func TestRefineLinkPhrase(t *testing.T) {
 	answer = "asdf[test_link1](https://hello-world1.com){:target=\"_blank\"}||[test_link2](https://hello-world2.com){:target=\"_blank\"}bbb|Zxc![test_image](https://hello-world.jpg)"
 	if result != answer {
 		t.Errorf("failed to run AddBlankPhrase with multiple blank phrases and image'\n")
+	}
+}
+
+func TestAddMeta(t *testing.T) {
+	result := AddMeta("hello")
+	splitted := strings.Split(result, "\n")
+	fmt.Println("result", result)
+	fmt.Println("splitted", splitted)
+	if len(splitted) != 6 {
+		t.Error("the length of splitted must be 6")
+	}
+
+	isFirstLine := splitted[0] == "---"
+	if !isFirstLine {
+		t.Error("first line is wrong")
+	}
+
+	isOkTitle := splitted[1] == "title: hello"
+	if !isOkTitle {
+		t.Error("title is wrong")
+	}
+
+	isDateOk := splitted[2][0:6] == "date: "
+	if !isDateOk {
+		t.Error("date is wrong")
+	}
+
+	isOkCate := splitted[3] == "categories: [your-category]"
+	if !isOkCate {
+		t.Error("category is wrong")
+	}
+
+	isOkTags := splitted[4] == "tags: [your-tag1, your-tage2]    # TAG names should always be lowercase"
+	if !isOkTags {
+		t.Error("tags is wrong")
+	}
+}
+
+func TestCheckSubTitle(t *testing.T) {
+	target := "asdfa"
+	isSubTitle := CheckSubTitle(target)
+	if isSubTitle {
+		t.Errorf("%s is not subtitle", target)
+	}
+
+	target = " - asdfa"
+	isSubTitle = CheckSubTitle(target)
+	if isSubTitle {
+		t.Errorf("%s is not subtitle", target)
+	}
+
+	target = "               - asdfa"
+	isSubTitle = CheckSubTitle(target)
+	if isSubTitle {
+		t.Errorf("%s is not subtitle", target)
+	}
+
+	target = "    - asdfa"
+	isSubTitle = CheckSubTitle(target)
+	if !isSubTitle {
+		t.Errorf("%s is subtitle", target)
+	}
+}
+
+func TestAddSubTitle(t *testing.T) {
+	target := "asdf"
+	result := AddSubTitle(target)
+	answer := "## asdf"
+	if result != answer {
+		t.Errorf("%s is not %s", target, answer)
 	}
 }
