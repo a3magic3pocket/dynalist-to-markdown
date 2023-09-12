@@ -5,21 +5,16 @@ import (
 	tr "dynalist_to_markdown/transformer"
 	"dynalist_to_markdown/util"
 	"fmt"
+	"os"
 	"strings"
 )
 
-func main() {
+func refinedDynalist(rows []string) []string {
 	refined := []string{}
 	imageOrder := 0
 
-	// Read target txt file.
-	target, err := util.ReadLines("./mock_data.txt")
-	if err != nil {
-		panic(err.Error())
-	}
-
 	inCodeBlock := false
-	for i, row := range target {
+	for i, row := range rows {
 		refinedRow := row
 
 		// Remove title and add meta phrase
@@ -50,7 +45,7 @@ func main() {
 
 		// Refine indent of shift+ctrl+enter new line.
 		if !isStartedToMark && !isCodeMarkLine && !inCodeBlock {
-			beforeRow := target[i-1]
+			beforeRow := rows[i-1]
 			refinedRow = tr.AddIndentsLikeBefore(beforeRow, refinedRow)
 		}
 
@@ -67,11 +62,44 @@ func main() {
 		refinedRow = tr.AddLastDoubleSpace(refinedRow)
 
 		refined = append(refined, refinedRow+"\n")
-
 	}
-	fmt.Println("--------")
-	fmt.Println(strings.Join(refined, ""))
 
-	// Add meta tag to top of txt file.
+	return refined
+}
 
+func help() {
+	fmt.Println(`- Hwo to use?
+	- build
+		- go build -o dynalist_to_markdown
+	- run build file
+		- ./dynalist_to_markdown [dynalist file path]
+	- run immediately
+		- go run main.go [dynalist file path]
+	- What is dynalist-to-markdown?
+		- Convert the file of dynalist exported to markdown`)
+}
+
+func main() {
+	args := os.Args[1:]
+	if len(args) < 1 {
+		help()
+		return
+	}
+
+	sourcePath := args[0]
+
+	// Read dynalist file exported.
+	target, err := util.ReadLines(sourcePath)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	refined := refinedDynalist(target)
+
+	// Write refined
+	resultPath := util.GetResultFilePath(sourcePath)
+	err = util.WriteLines(refined, resultPath)
+	if err != nil {
+		panic(err.Error())
+	}
 }
