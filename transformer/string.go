@@ -89,32 +89,39 @@ func AddBlankPhrase(row string) string {
 }
 
 func RefineLinkPhrase(row string) string {
-	pattern := `\[.*?\]\(.+?\)`
-	patternWithBlank := `\[.*?\]\(.+?\)(\s*{:target\s*=\s*["']_blank["']\s*})`
+	pattern := `[^!]\[.*?\]\(.+?\)|^\[.*?\]\(.+?\)`
+	patternWithBlank := `[^!]\[.*?\]\(.+?\)(\s*{:target\s*=\s*["']_blank["']\s*})|^\[.*?\]\(.+?\)(\s*{:target\s*=\s*["']_blank["']\s*})`
 	re := regexp.MustCompile(pattern)
 	re2 := regexp.MustCompile(patternWithBlank)
 	isMatched := re.MatchString(row)
 	isMatchedWithBlank := re2.MatchString(row)
 
-	fmt.Println("row", row)
-	fmt.Println("isMatched", isMatched)
-	fmt.Println("isMatchedWithBlank", isMatchedWithBlank)
+	// Remove blank phrases
 	if isMatchedWithBlank {
-		row = re.ReplaceAllString("$1", "")
-	}
-	fmt.Println("replaced Row", row)
+		for _, subMatchInfo := range re2.FindAllStringSubmatch(row, -1) {
+			if len(subMatchInfo) < 3 {
+				continue
+			}
 
+			blankPhrase := subMatchInfo[1]
+			if blankPhrase == "" {
+				blankPhrase = subMatchInfo[2]
+			}
+
+			row = strings.ReplaceAll(row, blankPhrase, "")
+		}
+	}
+
+	// Add blank phrases
 	if isMatched {
 		refinedRow := row
 
 		for _, submatchedInfo := range re.FindAllStringSubmatch(row, -1) {
-			if len(submatchedInfo) < 2 {
+			if len(submatchedInfo) < 1 {
 				continue
 			}
-			submatched := submatchedInfo[0]
-
-			fmt.Println("submatchedInfo", submatchedInfo)
-			refinedRow = strings.Replace(refinedRow, submatched, AddBlankPhrase(submatched), 1)
+			linkPhrase := submatchedInfo[0]
+			refinedRow = strings.Replace(refinedRow, linkPhrase, AddBlankPhrase(linkPhrase), 1)
 		}
 
 		return refinedRow
