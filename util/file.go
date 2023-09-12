@@ -55,7 +55,12 @@ func GetResultFilePath(filePath string) string {
 
 	originFileName := splitted[len(splitted)-1]
 	splitted = strings.Split(originFileName, ".")
-	fileNameWithoutExt := strings.Join(splitted[:len(splitted)-1], ".")
+
+	fileNameWithoutExt := splitted[0]
+	if len(splitted) > 1 {
+		fileNameWithoutExt = strings.Join(splitted[:len(splitted)-1], ".")
+	}
+
 	ext := "md"
 
 	return fmt.Sprintf("%s/%s%s.%s", parentPath, fileNameWithoutExt, config.ResultFileSuffix, ext)

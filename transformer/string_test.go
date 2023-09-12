@@ -323,6 +323,7 @@ func TestRefineLinkPhrase(t *testing.T) {
 }
 
 func TestAddMeta(t *testing.T) {
+	// case 1
 	result := AddMeta("hello")
 	splitted := strings.Split(result, "\n")
 	fmt.Println("result", result)
@@ -358,6 +359,7 @@ func TestAddMeta(t *testing.T) {
 }
 
 func TestCheckSubTitle(t *testing.T) {
+	// case 1
 	target := "asdfa"
 	isSubTitle := CheckSubTitle(target)
 	if isSubTitle {
@@ -384,6 +386,7 @@ func TestCheckSubTitle(t *testing.T) {
 }
 
 func TestAddSubTitle(t *testing.T) {
+	// case 1
 	target := "asdf"
 	result := AddSubTitle(target)
 	answer := "## asdf"
