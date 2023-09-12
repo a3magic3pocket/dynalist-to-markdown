@@ -273,15 +273,50 @@ func TestAddBlankPhrase(t *testing.T) {
 
 func TestRefineLinkPhrase(t *testing.T) {
 	// case 1
-	// target := "[test_linl](https://hello-world.com)"
-	// target := "[test_linl](https://hello-world.com){:target"
-	target := "[test_linl](https://hello-world.com){:target=\"_blank\"}"
+	target := "[test_link](https://hello-world.com)"
 	result := RefineLinkPhrase(target)
-	answer := "[test_linl](https://hello-world.com){:target=\"_blank\"}"
-	fmt.Println("target", target)
-	fmt.Println("answer", answer)
+	answer := "[test_link](https://hello-world.com){:target=\"_blank\"}"
 	if result != answer {
-		t.Errorf("failed to run AddBlankPhrase'\n")
+		t.Errorf("failed to run AddBlankPhrase without blank phrase'\n")
 	}
-	t.Error("asdfasfd")
+
+	// case 2
+	target = "[test_link](https://hello-world.com){:target"
+	result = RefineLinkPhrase(target)
+	answer = "[test_link](https://hello-world.com){:target=\"_blank\"}{:target"
+	if result != answer {
+		t.Errorf("failed to run AddBlankPhrase with the part of blank phrase'\n")
+	}
+
+	// case 3
+	target = "[test_link](https://hello-world.com){:target=\"_blank\"}"
+	result = RefineLinkPhrase(target)
+	answer = "[test_link](https://hello-world.com){:target=\"_blank\"}"
+	if result != answer {
+		t.Errorf("failed to run AddBlankPhrase with blank phrase'\n")
+	}
+
+	// case 4
+	target = "![test_image](https://hello-world.jpg)"
+	result = RefineLinkPhrase(target)
+	answer = "![test_image](https://hello-world.jpg)"
+	if result != answer {
+		t.Errorf("failed to run AddBlankPhrase with image'\n")
+	}
+
+	// case 5
+	target = "asdf[test_link1](https://hello-world1.com){:target=\"_blank\"}||[test_link2](https://hello-world2.com)bbb"
+	result = RefineLinkPhrase(target)
+	answer = "asdf[test_link1](https://hello-world1.com){:target=\"_blank\"}||[test_link2](https://hello-world2.com){:target=\"_blank\"}bbb"
+	if result != answer {
+		t.Errorf("failed to run AddBlankPhrase with multiple blank phrases'\n")
+	}
+
+	// case 6
+	target = "asdf[test_link1](https://hello-world1.com){:target=\"_blank\"}||[test_link2](https://hello-world2.com)bbb|Zxc![test_image](https://hello-world.jpg)"
+	result = RefineLinkPhrase(target)
+	answer = "asdf[test_link1](https://hello-world1.com){:target=\"_blank\"}||[test_link2](https://hello-world2.com){:target=\"_blank\"}bbb|Zxc![test_image](https://hello-world.jpg)"
+	if result != answer {
+		t.Errorf("failed to run AddBlankPhrase with multiple blank phrases and image'\n")
+	}
 }
