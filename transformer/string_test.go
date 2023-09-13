@@ -66,6 +66,13 @@ func TestCheckStartedToMark(t *testing.T) {
 	if result {
 		t.Errorf("'%s' does not start on a row\n", config.Mark)
 	}
+
+	// case 6
+	target = "          "
+	result = CheckStartedToMark(target)
+	if result {
+		t.Errorf("'%s' does not start on a row\n", config.Mark)
+	}
 }
 
 func TestGetNotSpaceIndex(t *testing.T) {
@@ -136,6 +143,14 @@ func TestRemoveIndents(t *testing.T) {
 	answer = "5 indents and base is 5"
 	if result != answer {
 		t.Errorf("failed to run TestRemoveIndents with '5 indents and base is 5'\n")
+	}
+
+	// case 5
+	target = "       "
+	result = RemoveIndents(target, 5)
+	answer = "       "
+	if result != answer {
+		t.Errorf("failed to run TestRemoveIndents with 'all spaces'\n")
 	}
 }
 

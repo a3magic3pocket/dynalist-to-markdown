@@ -44,19 +44,31 @@ func refinedDynalist(rows []string) []string {
 		}
 
 		// Refine indent of shift+ctrl+enter new line.
+		isRefBeforeRefinedRow := false
 		if !isStartedToMark && !isCodeMarkLine && !inCodeBlock {
+			beforeRefinedRow := refined[len(refined)-1]
 			beforeRow := rows[i-1]
+			if len(beforeRow) < len(beforeRefinedRow) {
+				isRefBeforeRefinedRow = true
+				beforeRow = beforeRefinedRow
+			}
 			refinedRow = tr.AddIndentsLikeBefore(beforeRow, refinedRow)
 		}
 
 		// Remove 8 indents to all of contents.
-		refinedRow = tr.RemoveIndents(refinedRow, 8)
+		if !isRefBeforeRefinedRow {
+			refinedRow = tr.RemoveIndents(refinedRow, 8)
+		}
 
 		// Convert image phrase format
-		refinedRow, imageOrder = tr.RefineImagePhrase(refinedRow, imageOrder)
+		if !inCodeBlock {
+			refinedRow, imageOrder = tr.RefineImagePhrase(refinedRow, imageOrder)
+		}
 
 		// Add '{:target="_blank"}' to the end of link phrase
-		refinedRow = tr.RefineLinkPhrase(refinedRow)
+		if !inCodeBlock {
+			refinedRow = tr.RefineLinkPhrase(refinedRow)
+		}
 
 		// Add double space to the end of each row
 		refinedRow = tr.AddLastDoubleSpace(refinedRow)

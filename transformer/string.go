@@ -32,11 +32,14 @@ func AddSubTitle(row string) string {
 }
 
 func CheckCodeMarkLine(row string) bool {
-	return strings.Contains(row, " ```")
+	return strings.Contains(row, "```")
 }
 
 func CheckStartedToMark(row string) bool {
 	trimmed := strings.TrimLeft(row, " ")
+	if len(trimmed) < 1 {
+		return false
+	}
 
 	return trimmed[0:1] == config.Mark
 }
@@ -64,6 +67,10 @@ func AddIndentsLikeBefore(beforeRow string, targetRow string) string {
 func RemoveIndents(row string, numSpace int) string {
 	base := numSpace
 	notSpaceIndex := GetNotSpaceIndex(row)
+	if notSpaceIndex < 0 {
+		return row
+	}
+
 	if notSpaceIndex < numSpace {
 		base = notSpaceIndex
 	}
