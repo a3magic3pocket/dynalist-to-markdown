@@ -119,6 +119,14 @@ func AddBlankPhrase(row string) string {
 	return row + "{:target=\"_blank\"}"
 }
 
+func EscapeDoubleBrace(row string) string {
+	if strings.Contains(row, "{{") || strings.Contains(row, "}}") {
+		return "{% raw %}" + row + "{% endraw %}"
+	}
+
+	return row
+}
+
 func RefineLinkPhrase(row string) string {
 	pattern := `[^!]\[.*?\]\(.+?\)|^\[.*?\]\(.+?\)`
 	patternWithBlank := `[^!]\[.*?\]\(.+?\)(\s*{:target\s*=\s*["']_blank["']\s*})|^\[.*?\]\(.+?\)(\s*{:target\s*=\s*["']_blank["']\s*})`

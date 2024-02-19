@@ -70,6 +70,9 @@ func refinedDynalist(rows []string) []string {
 			refinedRow = tr.RefineLinkPhrase(refinedRow)
 		}
 
+		// Escape double brace row
+		refinedRow = tr.EscapeDoubleBrace(refinedRow)
+
 		// Add double space to the end of each row
 		refinedRow = tr.AddLastDoubleSpace(refinedRow)
 

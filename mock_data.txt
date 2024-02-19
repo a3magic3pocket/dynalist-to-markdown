@@ -13,6 +13,10 @@
           echo "hello world"
           a="Mr.kim"
           ```
+        - 중복 중괄호 코드
+          ```html
+          {{ define "test.html" }}
+          ```
         - 단락이미지
             - ![test_image](https://images.pexels.com/photos/18036794/pexels-photo-18036794.jpeg)
         - 링크

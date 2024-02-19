@@ -409,3 +409,37 @@ func TestAddSubTitle(t *testing.T) {
 		t.Errorf("%s is not %s", target, answer)
 	}
 }
+
+func TestEscapeDoubleBrace(t *testing.T) {
+	// case 1
+	target := "style={{ backgroundImage: `url('${session.user.image}')`}}"
+	result := EscapeDoubleBrace(target)
+	answer := "{% raw %}style={{ backgroundImage: `url('${session.user.image}')`}}{% endraw %}"
+	if result != answer {
+		t.Errorf("%s is not %s", target, answer)
+	}
+
+	// case 2
+	target = "is not contained double brace"
+	result = EscapeDoubleBrace(target)
+	answer = "is not contained double brace"
+	if result != answer {
+		t.Errorf("%s is not %s", target, answer)
+	}
+
+	// case 3
+	target = "{{ left side double brace"
+	result = EscapeDoubleBrace(target)
+	answer = "{% raw %}{{ left side double brace{% endraw %}"
+	if result != answer {
+		t.Errorf("%s is not %s", target, answer)
+	}
+
+	// case 4
+	target = "right side double brace}}"
+	result = EscapeDoubleBrace(target)
+	answer = "{% raw %}right side double brace}}{% endraw %}"
+	if result != answer {
+		t.Errorf("%s is not %s", target, answer)
+	}
+}
